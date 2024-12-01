@@ -7,13 +7,13 @@ jobs:
         name: Setup project
         runs-on: ubuntu-24.04
         env:
-            CC: gcc-14
-            CXX: g++-14
+            CC: clang
+            CXX: clang++
         steps:
             - uses: actions/checkout@v3
             - run: |
                   sudo apt-get update
-                  sudo apt-get install -y cmake ninja-build g++-14 libstdc++-14-dev qt6-base-dev
+                  sudo apt-get install -y cmake ninja-build qt6-base-dev llvm build-essential
             - run: /bin/bash .ci/setup.sh
             - name: Cache cmake and third party
               uses: actions/upload-artifact@v3
@@ -26,8 +26,8 @@ jobs:
         name: Check clang-format
         runs-on: ubuntu-24.04
         env:
-            CC: gcc-14
-            CXX: g++-14
+            CC: clang
+            CXX: clang++
         steps:
             - uses: actions/checkout@v3
             - name: Download artifact
@@ -45,8 +45,8 @@ jobs:
         name: Check clang-tidy
         runs-on: ubuntu-24.04
         env:
-            CC: gcc-14
-            CXX: g++-14
+            CC: clang
+            CXX: clang++
         steps:
             - uses: actions/checkout@v3
             - name: Download artifact
@@ -57,5 +57,25 @@ jobs:
                   build
             - run: |
                   sudo apt-get update
-                  sudo apt-get install -y ninja-build clang-tidy g++-14 libstdc++-14-dev qt6-base-dev
+                  sudo apt-get install -y ninja-build clang-tidy qt6-base-dev
             - run: /bin/bash .ci/tidy_check.sh
+      build-check:
+        needs: setup
+        name: Check buildability
+        runs-on: ubuntu-24.04
+        env:
+            CC: clang
+            CXX: clang++
+        steps:
+            - uses: actions/checkout@v3
+            - name: Download artifact
+              uses: actions/download-artifact@v3
+              with:
+                name: cmake_cache
+                path: |
+                  build
+            - run: |
+                  sudo apt-get update
+                  sudo apt-get install -y ninja-build llvm build-essential qt6-base-dev
+            - run: /bin/bash .ci/build_check.sh
+
