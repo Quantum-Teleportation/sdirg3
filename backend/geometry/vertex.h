@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include <QHash>
+#include <QPointF>
 #include <QString>
 #include <QUuid>
 #include <QVector>
@@ -34,6 +35,8 @@ public:
 			std::remove(polygons.begin(), polygons.end(), polygon_id),
 			polygons.end());
 	}
+
+	inline operator QPointF() const noexcept { return QPointF{x_, y_}; }
 
 #if DELETE_VERTEX
 	void delete_vertex();
