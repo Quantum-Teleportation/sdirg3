@@ -3,113 +3,66 @@
 #include <QRandomGenerator>
 #include <QUuid>
 
-bool check_convex(double first_x, double first_y, double second_x,
-				  double second_y, double third_x, double third_y) {
-	QPair<double, double> first_vector(second_x - first_x, second_y - first_y);
-	QPair<double, double> second_vector(third_x - second_x, third_y - second_y);
-	double mult = first_vector.first * second_vector.second -
-				  second_vector.first * first_vector.second;
-	return mult <= 0;
+namespace Geometry {
+
+bool is_segment_intersected(
+	const QPointF &a1, const QPointF &a2,
+	const QPointF &b1, const QPointF &b2) noexcept{
+		return 
+			is_projection_intersected(a1.x(), a2.x(), b1.x(), b2.x()) &&
+			is_projection_intersected(a1.y(), a2.y(), b1.y(), b2.y()) &&
+			orientated_area(a1, a2, b1) * orientated_area(a1, a2, b2) <= 0 &&
+			orientated_area(b1, b2, a1) * orientated_area(b1, b2, a2) <= 0;
 }
 
-double area(double first_x, double first_y, double second_x, double second_y,
-			double third_x, double third_y) {
-	return (second_x - first_x) * (third_y - first_y) -
-		   (second_y - first_y) * (third_x - first_x);
-}
-
-bool intersect(double a, double b, double c, double d) {
-	if (a > b) {
-		std::swap(a, b);
-	}
-	if (c > d) {
-		std::swap(c, d);
-	}
-	return std::max(a, c) <= std::min(b, d);
-}
-
-bool check_intersect(double first_x, double first_y, double second_x,
-					 double second_y, double third_x, double third_y,
-					 double fourth_x, double fourth_y) {
-	return intersect(first_x, second_x, third_x, fourth_x) &&
-		   intersect(first_y, second_y, third_y, fourth_y) &&
-		   area(first_x, first_y, second_x, second_y, third_x, third_y) *
-				   area(first_x, first_y, second_x, second_y, fourth_x,
-						fourth_y) <=
-			   0 &&
-		   area(third_x, third_y, fourth_x, fourth_y, first_x, first_y) *
-				   area(third_x, third_y, fourth_x, fourth_y, second_x,
-						second_y) <=
-			   0;
-}
-
-bool check_new_point(double first_x, double first_y, double second_x,
-					 double second_y, double third_x, double third_y) {
-	bool first_check =
-		check_convex(first_x, first_y, second_x, second_y, third_x, third_y);
-	bool second_check = true;
-
-	for (auto pair = all_edges.begin(); pair != all_edges.end(); ++pair) {
-		double old_first_x = all_vertices[pair.value().coords().first].x();
-		double old_first_y = all_vertices[pair.value().coords().first].y();
-		double old_second_x = all_vertices[pair.value().coords().second].x();
-		double old_second_y = all_vertices[pair.value().coords().second].y();
-		if (check_intersect(old_first_x, old_first_y, old_second_x,
-							old_second_y, second_x, second_y, third_x,
-							third_y) == false) {
-			second_check = false;
-		}
-	}
-
-	return first_check && second_check;
-}
-
-bool point_in_polygon(double x, double y, QUuid polygon_id) {
-	double vector_x = 40000 + QRandomGenerator::global()->bounded(0, 2000);
-	double vector_y = 40000 + QRandomGenerator::global()->bounded(0, 2000);
-	int count_intersection = 0;
+bool point_in_polygon(const QPointF &p, QUuid polygon_id) {
+	QPointF ray ( 
+		40000 + QRandomGenerator::global()->bounded(0, 2000),
+		40000 + QRandomGenerator::global()->bounded(0, 2000)
+	);
+	//TODO: what if this rand ray is equal to polygon vertex???
+	std::size_t crossings = 0;
 	for (auto &edge : all_polygons[polygon_id].edges) {
-		if (check_intersect(
-				x, y, vector_x, vector_y,
-				all_vertices[all_edges[edge].coords().first].x(),
-				all_vertices[all_edges[edge].coords().first].y(),
-				all_vertices[all_edges[edge].coords().second].x(),
-				all_vertices[all_edges[edge].coords().second].y())) {
-			count_intersection++;
+		if (is_segment_intersected(
+			p, ray, 
+			{all_vertices[all_edges[edge].coords().first].x(), 
+			 all_vertices[all_edges[edge].coords().first].y()},
+			{all_vertices[all_edges[edge].coords().second].x(),
+			 all_vertices[all_edges[edge].coords().second].y()}
+		)) {
+			++crossings;
 		}
 	}
-	return count_intersection % 2 == 1;
+	return crossings & 1;
 }
 
-QVector<QUuid> find_polygons_by_point(double x, double y) {
+QVector<QUuid> find_polygons_by_point(const QPointF &p) {
 	QVector<QUuid> polygons;
 
-	for (auto polygon = all_polygons.begin(); polygon != all_polygons.end();
-		 ++polygon) {
-		if (point_in_polygon(x, y, polygon.key())) {
-			polygons.append(polygon.key());
+	// mb std::for_each here better?
+	for (const auto &polygon : all_polygons) {
+		if (point_in_polygon(p, polygon.id())) {
+			polygons.append(polygon.id());
 		}
 	}
 	return polygons;
 }
 
-double cross(QPair<double, double> first_vector,
-			 QPair<double, double> second_vector) {
-	return first_vector.first * second_vector.second -
-		   second_vector.first * first_vector.second;
-}
+bool isConvex(const QVector<QPointF> &vertices) {
+	double init = cross(
+		{vertices[1].x() - vertices[0].x(),
+		 vertices[1].y() - vertices[0].y()},
+		{vertices[2].x() - vertices[1].x(),
+		 vertices[2].y() - vertices[1].y()}
+	);
 
-bool isConvex(QVector<QPair<double, double>> vertices) {
-	double init = cross({vertices[1].first - vertices[0].first,
-						 vertices[1].second - vertices[0].second},
-						{vertices[2].first - vertices[1].first,
-						 vertices[2].second - vertices[1].second});
 	for (int i = 1; i < vertices.size(); i++) {
 		double current_cross = cross(
-			{vertices[i].first - vertices[i - 1].first,
-			 vertices[i].second - vertices[i - 1].second},
-			{vertices[(i + 1) % vertices.size()].first - vertices[i].first,
-			 vertices[(i + 1) % vertices.size()].second - vertices[i].second});
+			{vertices[i].x() - vertices[i - 1].x(),
+			 vertices[i].y() - vertices[i - 1].y()},
+			{vertices[(i + 1) % vertices.size()].x() - vertices[i].x(),
+			 vertices[(i + 1) % vertices.size()].y() - vertices[i].y()}
+		);
 		if (init * current_cross < 0) {
 			return false;
 		}
@@ -117,20 +70,16 @@ bool isConvex(QVector<QPair<double, double>> vertices) {
 	return true;
 }
 
-bool isNotIntersecting(QVector<std::pair<double, double>> vertices) {
+bool isNotIntersecting(const QVector<QPointF> &vertices) {
 	for (int i = 0; i < vertices.size(); i++) {
-		for (auto pair = all_edges.begin(); pair != all_edges.end(); ++pair) {
-			double old_first_x = all_vertices[pair.value().coords().first].x();
-			double old_first_y = all_vertices[pair.value().coords().first].y();
-			double old_second_x =
-				all_vertices[pair.value().coords().second].x();
-			double old_second_y =
-				all_vertices[pair.value().coords().second].y();
-			if (check_intersect(old_first_x, old_first_y, old_second_x,
-								old_second_y, vertices[i].first,
-								vertices[i].second,
-								vertices[(i + 1) % vertices.size()].first,
-								vertices[(i + 1) % vertices.size()].second)) {
+		for (const auto &pair : all_edges) {
+			if (is_segment_intersected(
+				{all_vertices[pair.coords().first].x(),
+				 all_vertices[pair.coords().first].y()},
+				{all_vertices[pair.coords().second].x(),
+				 all_vertices[pair.coords().second].y()}, 
+				vertices[i], 
+				vertices[(i + 1) % vertices.size()])) {
 				return false;
 			}
 		}
@@ -138,6 +87,4 @@ bool isNotIntersecting(QVector<std::pair<double, double>> vertices) {
 	return true;
 }
 
-bool checkPolygon(QVector<QPair<double, double>> vertices) {
-	return isConvex(vertices) && isNotIntersecting(vertices);
 }
