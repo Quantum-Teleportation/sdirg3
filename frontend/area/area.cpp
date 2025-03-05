@@ -126,8 +126,8 @@ void Area::mousePressEvent(QMouseEvent *event) {
 void Area::mouseMoveEvent(QMouseEvent *event) {
 	if (draggingVertex != -1) {
 		auto new_coord = event->pos() - dragOffset;
-		emit Mediator::instance() -> editVertexCoordMouse(draggingVertex,
-														  &new_coord);
+		emit Mediator::instance()
+			-> editVertexCoordMouse(draggingVertex, &new_coord);
 	}
 }
 
