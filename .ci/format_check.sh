@@ -11,6 +11,7 @@ cmake --build $BUILD_DIR -j --target run-clang-format
 if [ $(git status --porcelain | wc -l) -eq "0" ]; then
     echo "OK"
 else
+    git diff
     echo "BAD format"
     git restore .
     exit 1
