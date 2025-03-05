@@ -20,11 +20,8 @@ bool point_in_polygon(const QPointF &p, QUuid polygon_id) {
 	std::size_t crossings = 0;
 	for (auto &edge : all_polygons[polygon_id].edges) {
 		if (is_segment_intersected(
-				p, ray,
-				{all_vertices[all_edges[edge].coords().first].x(),
-				 all_vertices[all_edges[edge].coords().first].y()},
-				{all_vertices[all_edges[edge].coords().second].x(),
-				 all_vertices[all_edges[edge].coords().second].y()})) {
+				p, ray, all_vertices[all_edges[edge].coords().first],
+				all_vertices[all_edges[edge].coords().second])) {
 			++crossings;
 		}
 	}
@@ -64,10 +61,8 @@ bool isConvex(const QVector<QPointF> &vertices) {
 bool isNotIntersecting(const QVector<QPointF> &vertices) {
 	for (int i = 0; i < vertices.size(); i++) {
 		for (const auto &pair : all_edges) {
-			if (is_segment_intersected({all_vertices[pair.coords().first].x(),
-										all_vertices[pair.coords().first].y()},
-									   {all_vertices[pair.coords().second].x(),
-										all_vertices[pair.coords().second].y()},
+			if (is_segment_intersected(all_vertices[pair.coords().first],
+									   all_vertices[pair.coords().second],
 									   vertices[i],
 									   vertices[(i + 1) % vertices.size()])) {
 				return false;
