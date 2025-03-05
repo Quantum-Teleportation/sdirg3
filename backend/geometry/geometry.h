@@ -34,8 +34,8 @@ inline double orientated_area(const QPointF &a, const QPointF &b,
  */
 inline bool is_projection_intersected(double a1, double a2, double b1,
 									  double b2) noexcept {
-	return (std::max(a1, a2) >= std::min(b1, b2)) &
-		   (std::max(b1, b2) >= std::min(a1, a2));
+	return int(std::max(a1, a2) >= std::min(b1, b2)) &
+		   int(std::max(b1, b2) >= std::min(a1, a2));
 }
 
 /*
@@ -90,7 +90,7 @@ bool isNotIntersecting(const QVector<QPointF> &vertices);
  *	check: polygon for convex and not self-intersected(as I can understand)
  */
 inline bool checkPolygon(const QVector<QPointF> &vertices) {
-	return isConvex(vertices) & isNotIntersecting(vertices);
+	return int(isConvex(vertices)) & int(isNotIntersecting(vertices));
 }
 
 } // namespace Geometry

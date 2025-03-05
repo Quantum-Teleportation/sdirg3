@@ -1,6 +1,5 @@
 #include "geometry.h"
 
-#include <QRandomGenerator>
 #include <QUuid>
 
 namespace Geometry {
@@ -14,8 +13,7 @@ bool is_segment_intersected(const QPointF &a1, const QPointF &a2,
 }
 
 bool point_in_polygon(const QPointF &p, QUuid polygon_id) {
-	QPointF ray(40000 + QRandomGenerator::global()->bounded(0, 2000),
-				40000 + QRandomGenerator::global()->bounded(0, 2000));
+	QPointF ray(922337203685477632, 0);
 	// TODO: what if this rand ray is equal to polygon vertex???
 	std::size_t crossings = 0;
 	for (auto &edge : all_polygons[polygon_id].edges) {
