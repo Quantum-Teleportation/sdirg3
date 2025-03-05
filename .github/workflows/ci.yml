@@ -16,7 +16,7 @@ jobs:
                   sudo apt-get install -y cmake ninja-build qt6-base-dev llvm build-essential
             - run: /bin/bash .ci/setup.sh
             - name: Cache cmake and third party
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                 name: cmake_cache
                 path: |
@@ -31,7 +31,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Download artifact
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                 name: cmake_cache
                 path: |
@@ -50,7 +50,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Download artifact
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                 name: cmake_cache
                 path: |
@@ -69,7 +69,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Download artifact
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                 name: cmake_cache
                 path: |
