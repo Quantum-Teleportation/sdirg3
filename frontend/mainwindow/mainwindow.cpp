@@ -1,12 +1,17 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "editor.h"
+#include "generator.h"
 
 #include <QPalette>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), ui(new Ui::MainWindow) {
 	ui->setupUi(this);
+
+	ui->toolBar->addAction(ui->actionSave);
+	QObject::connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveConfigs);
+
 
 	ui->editorDock->setWidget(new Editor(ui->editorDock)); // ??
 	connect(ui->editorDock, &QDockWidget::visibilityChanged, this, [this]() {
@@ -104,6 +109,12 @@ void MainWindow::selectPolygon(QUuid id) {
 	Polygon *polygon = &all_polygons[id];
 	ui->editorDock->show();
 	emit Mediator::instance() -> onPolygonSelect(polygon);
+}
+
+void MainWindow::saveConfigs() {
+	qDebug() << "Emit Save configs";
+	terraformer::generator gen;
+	gen.saveAs("test.conf");
 }
 
 MainWindow::~MainWindow() { delete ui; }

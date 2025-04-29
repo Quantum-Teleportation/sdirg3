@@ -23,6 +23,8 @@ private:
 	Ui::MainWindow *ui;
 	void newPolygon();
 	void selectPolygon(QUuid id);
+
+	void saveConfigs();
 	// Editor editor;
 };
 #endif // MAINWINDOW_H
