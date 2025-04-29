@@ -96,7 +96,7 @@ void Area::mousePressEvent(QMouseEvent *event) {
 			return;
 		}
 
-		auto &last_candidate = all_polygons[candidates.last()];
+		auto &last_candidate = *(candidates.last());
 		auto vertices = last_candidate.vertices;
 
 		// emit

@@ -47,7 +47,7 @@ bool is_segment_intersected(const QPointF &a1, const QPointF &a2,
 /*
  * check : is is point in polygon
  */
-bool point_in_polygon(const QPointF &p, QUuid polygon_id);
+bool point_in_polygon(const QPointF &p, const Polygon &poly);
 
 /*
  * Annotation: in actual version of drig3 project this function are commented
@@ -58,7 +58,7 @@ bool point_in_polygon(const QPointF &p, QUuid polygon_id);
 /*
  *	Find polygon uuid by point
  */
-QVector<QUuid> find_polygons_by_point(const QPointF &p);
+QVector<Polygon *> find_polygons_by_point(const QPointF &p);
 
 /*
  *	Vectors multiplication

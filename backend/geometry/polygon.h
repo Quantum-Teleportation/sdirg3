@@ -31,12 +31,12 @@ public:
 
 	QVector<QUuid> edges;
 	QVector<QUuid> vertices;
+	[[maybe_unused]] int material_;
 
 private:
 	QString name_;
 	static inline int total_polygon_number = 0;
 	int cur_polygon_number_;
-	[[maybe_unused]] int material_;
 	QUuid id_;
 };
 
