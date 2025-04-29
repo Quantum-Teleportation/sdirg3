@@ -41,6 +41,7 @@ target_link_libraries(
 	Qt6::Widgets 
 	Qt6::Gui 
 	geometry
+	generator
 )
 
 target_include_directories(
