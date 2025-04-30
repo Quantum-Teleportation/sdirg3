@@ -9,6 +9,7 @@ set(INCLUDE_DIR include)
 
 set(SOURCES 
 	${SOURCES_DIR}/generator.cpp
+	${SOURCES_DIR}/fillers.cpp
 )
 
 set(HEADERS 

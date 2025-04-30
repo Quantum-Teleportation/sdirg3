@@ -1,4 +1,6 @@
 #include <generator.h>
+#include <string_view>
+#include <utility>
 
 namespace terraformer {
 
@@ -6,9 +8,6 @@ generator::generator() {
 	templ = std::string(
 		#include <config_template.h>
 	);
-
-	
-
 }
 
 void generator::saveAs(const std::string &out_file) {
@@ -22,12 +21,32 @@ void generator::saveAs(const std::string &out_file) {
 
 	std::string default_schema_name = "ElasticMatRectSchema2DRusanov3";
 	// TODO: add internal class for fillers information with to_string method
-	std::vector<std::string> default_fillers = {
-		"[filler]\nname = RectNoReflectFiller\naxis=0\nside=0\n[/filler]",
-		"[filler]\nname = RectNoReflectFiller\naxis=0\nside=1\n[/filler]",
-		"[filler]\nname = RectNoReflectFiller\naxis=1\nside=0\n[/filler]",
-		"[filler]\nname = RectNoReflectFiller\naxis=1\nside=1\n[/filler]"
+
+	auto replacer = [this] (std::string_view placeholder, std::string_view subs) {
+		if (std::size_t pos = 0; (pos = templ.find(placeholder, 0)) != std::string::npos) {
+			templ.replace(pos, placeholder.size(), subs);
+		} else { 
+			std::stringstream ss;
+			ss << "No " << placeholder << "in given template";
+			throw std::runtime_error(ss.str());
+		}
 	};
+
+	{
+		std::string fillerOut = "";
+		for (const auto &f: fillers_) {
+			fillerOut += f->Serialize();
+		}
+		replacer("<__FILLERS__>", fillerOut);
+	}
+
+	// std::vector<std::string> default_fillers = {
+	// 	"[filler]\nname = RectNoReflectFiller\naxis=0\nside=0\n[/filler]",
+	// 	"[filler]\nname = RectNoReflectFiller\naxis=0\nside=1\n[/filler]",
+	// 	"[filler]\nname = RectNoReflectFiller\naxis=1\nside=0\n[/filler]",
+	// 	"[filler]\nname = RectNoReflectFiller\naxis=1\nside=1\n[/filler]"
+	// };
+
 	// TODO: add internal class for corrector (?) (with to_string method)
 	std::vector<std::string> default_correctors = {
 		"[corrector]\nname = ForceRectElasticBoundary2D\naxis=0\nside=1\n[/corrector]",
@@ -38,17 +57,7 @@ void generator::saveAs(const std::string &out_file) {
 	std::vector<std::size_t> default_norms  = {1};
 	std::size_t default_nsteps_for_save = 100;
 
-	// replacing part
-	std::string placeholders[] = {
-		"<__DT__>", 
-	};
-	
-	if (std::size_t pos = 0; (pos = templ.find("<__DT__>", 0)) != std::string::npos) {
-		templ.replace(pos, sizeof("<__DT__>"), std::to_string(default_dt) + "\n");
-	} else { throw std::runtime_error("No <__DT__> in given template"); }
-
 	std::cout << templ << std::endl;
-
 }
 
 }
