@@ -392,8 +392,8 @@ void GeneratorConfigWidget::onEditFillerClicked() {
 	}
 
 	// Retrieve the raw pointer stored in the item's data
-	terraformer::filler *fillerPtr =
-		currentItem->data(Qt::UserRole).value<terraformer::filler *>();
+	terraformer::Filler *fillerPtr =
+		currentItem->data(Qt::UserRole).value<terraformer::Filler *>();
 	if (!fillerPtr) {
 		qWarning() << "Could not retrieve filler pointer from list item data.";
 		return;
@@ -459,8 +459,8 @@ void GeneratorConfigWidget::onRemoveFillerClicked() {
 		return;
 	}
 
-	terraformer::filler *fillerPtr =
-		currentItem->data(Qt::UserRole).value<terraformer::filler *>();
+	terraformer::Filler *fillerPtr =
+		currentItem->data(Qt::UserRole).value<terraformer::Filler *>();
 	if (!fillerPtr) {
 		qWarning() << "Could not retrieve filler pointer from list item data "
 					  "for removal.";
@@ -470,7 +470,7 @@ void GeneratorConfigWidget::onRemoveFillerClicked() {
 	// Find and remove the corresponding unique_ptr from fillers
 	auto it = std::remove_if(
 		fillers.begin(), fillers.end(),
-		[fillerPtr](const std::unique_ptr<terraformer::filler> &p) {
+		[fillerPtr](const std::unique_ptr<terraformer::Filler> &p) {
 			return p.get() == fillerPtr;
 		});
 
