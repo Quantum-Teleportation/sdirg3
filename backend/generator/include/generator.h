@@ -35,6 +35,11 @@ public:
 	std::unique_ptr<RectGridFactory> factory_ =
 		std::make_unique<RectGridFactory>();
 
+	float dt = 0.0002;
+	std::size_t nsteps = 5000;
+	std::string grid_id = "default_grid";
+	std::string schema_name = "ElasticMatRectSchema2DRusanov3";
+
 	template <typename T>
 	// https://godbolt.org/z/ErejKM31E
 	struct Field final {
