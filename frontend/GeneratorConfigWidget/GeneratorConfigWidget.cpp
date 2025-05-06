@@ -97,25 +97,11 @@ void GeneratorConfigWidget::setDefaults() {
 	ui->saverPathEdit->setText("vtk/%g_%s.vtk");
 	ui->paramsLineEdit->setText("v");
 	ui->normsLineEdit->setText("1");
-
-	// Add default fillers (common case from examples)
-	fillers.push_back(std::make_unique<terraformer::RectNoReflectFiller>(
-		terraformer::RectNoReflectFiller::SIDE_LEFT,
-		terraformer::RectNoReflectFiller::AXIS_X));
-	fillers.push_back(std::make_unique<terraformer::RectNoReflectFiller>(
-		terraformer::RectNoReflectFiller::SIDE_RIGHT,
-		terraformer::RectNoReflectFiller::AXIS_X));
-	fillers.push_back(std::make_unique<terraformer::RectNoReflectFiller>(
-		terraformer::RectNoReflectFiller::SIDE_LEFT,
-		terraformer::RectNoReflectFiller::AXIS_Y));
-	fillers.push_back(std::make_unique<terraformer::RectNoReflectFiller>(
-		terraformer::RectNoReflectFiller::SIDE_RIGHT,
-		terraformer::RectNoReflectFiller::AXIS_Y));
 }
 
 void GeneratorConfigWidget::updateFillerListWidget() {
 	ui->fillerListWidget->clear();
-	for (const auto &filler : fillers) {
+	for (const auto &filler : gen.fillers_) {
 		QString desc = "Unknown Filler Type";
 		// Attempt to cast to known filler types
 		if (auto *rectFiller = dynamic_cast<terraformer::RectNoReflectFiller *>(
@@ -192,9 +178,6 @@ void GeneratorConfigWidget::onGenerateClicked() {
 		return;
 	}
 
-	// --- 1. Create Generator Instance ---
-	terraformer::generator gen; // TODO: move to mainwindow
-
 	// --- 2. Gather Values from UI and Apply to Generator ---
 	// TODO: NEED TO REFACTOR GENERATOR CLASS. NEED SETTERS FOR ALL FIELDS OR
 	// OTHER SETUP METHOD.
@@ -205,13 +188,13 @@ void GeneratorConfigWidget::onGenerateClicked() {
 		qDebug() << "--- Global ---";
 		qDebug() << "dt:" << ui->dtSpinBox->value();
 		qDebug() << "steps:" << ui->stepsSpinBox->value();
-		// gen.setDt(ui->dtSpinBox->value());
-		// gen.setSteps(ui->stepsSpinBox->value());
+		gen.dt = ui->dtSpinBox->value();
+		gen.nsteps = ui->stepsSpinBox->value();
 
 		// --- Grid ---
 		qDebug() << "--- Grid ---";
 		qDebug() << "gridId:" << ui->gridIdEdit->text();
-		// gen.setGridId(ui->gridIdEdit->text().toStdString());
+		gen.grid_id = ui->gridIdEdit->text().toStdString();
 
 		// --- Material ---
 		qDebug() << "--- Material ---";
@@ -230,24 +213,24 @@ void GeneratorConfigWidget::onGenerateClicked() {
 		qDebug() << "originY:" << ui->originYSpinBox->value();
 		qDebug() << "spacingX:" << ui->spacingXSpinBox->value();
 		qDebug() << "spacingY:" << ui->spacingYSpinBox->value();
-		// gen.setFactorySize(ui->sizeXSpinBox->value(),
-		// ui->sizeYSpinBox->value());
-		// gen.setFactoryOrigin(ui->originXSpinBox->value(),
-		// ui->originYSpinBox->value());
-		// gen.setFactorySpacing(ui->spacingXSpinBox->value(),
-		// ui->spacingYSpinBox->value());
+		gen.factory_->size_ = {ui->sizeXSpinBox->value(),
+							   ui->sizeYSpinBox->value()};
+		gen.factory_->origin_ = {ui->originXSpinBox->value(),
+								 ui->originYSpinBox->value()};
+		gen.factory_->spacing_ = {ui->spacingXSpinBox->value(),
+								  ui->spacingYSpinBox->value()};
 
 		// --- Schema ---
 		qDebug() << "--- Schema ---";
 		qDebug() << "schemaName:" << ui->schemaNameEdit->text();
-		// gen.setSchemaName(ui->schemaNameEdit->text().toStdString());
+		gen.schema_name = ui->schemaNameEdit->text().toStdString();
 
 		// --- Fillers ---
 		qDebug() << "--- Fillers ---";
 		// gen.clearFillers();
-		qDebug() << "Adding" << fillers.size()
+		qDebug() << "Adding" << gen.fillers_.size()
 				 << "fillers to generator configuration...";
-		for (const auto &filler_ptr : fillers) {
+		for (const auto &filler_ptr : gen.fillers_) {
 			if (!filler_ptr)
 				continue; // Should not happen
 
@@ -375,11 +358,11 @@ void GeneratorConfigWidget::onAddFillerClicked() { // FIXME
 					: terraformer::RectNoReflectFiller::SIDE_RIGHT;
 
 	// Create and add the new filler
-	fillers.push_back(
+	gen.fillers_.push_back(
 		std::make_unique<terraformer::RectNoReflectFiller>(side, axis));
 	updateFillerListWidget(); // Refresh the UI list
 	qDebug() << "Added RectNoReflectFiller: Axis=" << static_cast<int>(axis)
-			 << "Side=" << static_cast<int>(side);
+			 << "Side=" << static_cast<int>(side) << gen.fillers_.size();
 }
 
 void GeneratorConfigWidget::onEditFillerClicked() {
@@ -469,14 +452,14 @@ void GeneratorConfigWidget::onRemoveFillerClicked() {
 
 	// Find and remove the corresponding unique_ptr from fillers
 	auto it = std::remove_if(
-		fillers.begin(), fillers.end(),
+		gen.fillers_.begin(), gen.fillers_.end(),
 		[fillerPtr](const std::unique_ptr<terraformer::Filler> &p) {
 			return p.get() == fillerPtr;
 		});
 
-	if (it != fillers.end()) {
-		fillers.erase(it, fillers.end());
-		qDebug() << "Removed filler from internal list.";
+	if (it != gen.fillers_.end()) {
+		gen.fillers_.erase(it, gen.fillers_.end());
+		qDebug() << "Removed filler from internal list." << gen.fillers_.size();
 		updateFillerListWidget(); // Refresh the UI list
 	} else {
 		qWarning() << "Could not find the selected filler in the internal list "

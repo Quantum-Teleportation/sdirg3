@@ -11,13 +11,7 @@ generator::generator() {
 }
 
 void generator::saveAs(const std::string &out_file) {
-	[[maybe_unused]] float default_dt = 0.0002;
-	[[maybe_unused]] std::size_t default_steps = 5000;
-	std::string default_grid_id = "default_grid";
-
-	std::string default_schema_name = "ElasticMatRectSchema2DRusanov3";
 	// TODO: add internal class for fillers information with to_string method
-
 	auto replacer = [this](std::string_view placeholder,
 						   std::string_view subs) {
 		if (std::size_t pos = 0;
@@ -25,10 +19,30 @@ void generator::saveAs(const std::string &out_file) {
 			templ.replace(pos, placeholder.size(), subs);
 		} else {
 			std::stringstream ss;
-			ss << "No " << placeholder << "in given template";
+			ss << "No \"" << placeholder << "\" in given template";
 			throw std::runtime_error(ss.str());
 		}
 	};
+
+	// dt
+	do {
+		replacer("<__DT__>", std::to_string(dt));
+	} while (0);
+
+	// steps count
+	do {
+		replacer("<__STEPS__>", std::to_string(nsteps));
+	} while (0);
+
+	// grid_id
+	do {
+		replacer("<__GRID_ID__>", grid_id);
+	} while (0);
+
+	// schema_name
+	do {
+		replacer("<__SCHEMA_NAME__>", schema_name);
+	} while (0);
 
 	// fillers
 	do {
@@ -37,6 +51,7 @@ void generator::saveAs(const std::string &out_file) {
 			fillerOut += f->Serialize();
 		}
 		replacer("<__FILLERS__>", fillerOut);
+
 	} while (0);
 
 	// factory
