@@ -136,12 +136,11 @@ void MainWindow::saveConfigs() {
 	// std::vector<std::vector<float>> material_values = {{}, {}, {}};
 	// // maybe we need here convert polygons coords using scale to fixed fabric
 	// size for (std::size_t x = 0, end_x = factory_size.first; x < end_x; ++x)
-	// { 	for (std::size_t y = 0, end_y = factory_size.second; y < end_y; ++y) {
-	// 		auto polygons = Geometry::find_polygons_by_point({x, y});
-	// 		if (polygons.size() == 0) {
-	// 			for (std::size_t i = 0, prop_count = default_material.size(); i
-	// < prop_count; ++i) 				material_values[i].push_back(default_material[i]); 		}
-	// else {
+	// { 	for (std::size_t y = 0, end_y = factory_size.second; y < end_y; ++y)
+	// { 		auto polygons = Geometry::find_polygons_by_point({x, y}); if
+	// (polygons.size() == 0) { 			for (std::size_t i = 0, prop_count =
+	// default_material.size(); i < prop_count; ++i)
+	// material_values[i].push_back(default_material[i]); 		} else {
 	// 			// TODO: refactor material in polygon to vector of float
 	// properties of material 			for(std::size_t i = 0, prop_count =
 	// material_configs.size(); i < prop_count; ++i)

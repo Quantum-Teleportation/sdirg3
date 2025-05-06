@@ -210,7 +210,7 @@ void GeneratorConfigWidget::onGenerateClicked() {
 
 		// --- Grid ---
 		qDebug() << "--- Grid ---";
-		qDebug() << "gridId:" << ui->gridIdEdit->text().toStdString();
+		qDebug() << "gridId:" << ui->gridIdEdit->text();
 		// gen.setGridId(ui->gridIdEdit->text().toStdString());
 
 		// --- Material ---
@@ -239,7 +239,7 @@ void GeneratorConfigWidget::onGenerateClicked() {
 
 		// --- Schema ---
 		qDebug() << "--- Schema ---";
-		qDebug() << "schemaName:" << ui->schemaNameEdit->text().toStdString();
+		qDebug() << "schemaName:" << ui->schemaNameEdit->text();
 		// gen.setSchemaName(ui->schemaNameEdit->text().toStdString());
 
 		// --- Fillers ---
@@ -279,7 +279,7 @@ void GeneratorConfigWidget::onGenerateClicked() {
 
 		// --- Savers ---
 		qDebug() << "--- Savers ---";
-		qDebug() << "saverPath:" << ui->saverPathEdit->text().toStdString();
+		qDebug() << "saverPath:" << ui->saverPathEdit->text();
 		qDebug() << "stepsForSave:" << ui->stepsForSaveSpinBox->value();
 		// gen.setSaverPath(ui->saverPathEdit->text().toStdString());
 		// gen.setStepsForSave(ui->stepsForSaveSpinBox->value());
@@ -293,7 +293,7 @@ void GeneratorConfigWidget::onGenerateClicked() {
 		for (const QString &s : paramsList) {
 			paramsVec.push_back(s.trimmed().toStdString());
 		}
-		qDebug() << "Parsed params:" << paramsVec;
+		// qDebug() << "Parsed params:" << paramsVec;
 		// gen.setSaverParams(paramsVec);
 
 		// Parse comma-separated norms

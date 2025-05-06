@@ -1,20 +1,19 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+#include <fillers.h>
 #include <fstream>
 #include <iostream>
-#include <string>
-#include <vector>
-#include <utility>
-#include <fillers.h>
 #include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace terraformer {
 
-template<typename T, typename... Args>
-inline auto makeVector(Args&&... args) {
+template <typename T, typename... Args> inline auto makeVector(Args &&...args) {
 	std::vector<T> vec;
-	vec.reserve(sizeof...(Args)); 
+	vec.reserve(sizeof...(Args));
 	(vec.emplace_back(std::forward<Args>(args)), ...);
 	return vec;
 }
@@ -25,12 +24,12 @@ public:
 	// method for generating config from template
 	void saveAs(const std::string &out_file);
 
-	std::vector<std::unique_ptr<filler>> fillers_ = makeVector<std::unique_ptr<filler>>(
-		std::make_unique<RectNoReflectFiller>(0, 0),
-		std::make_unique<RectNoReflectFiller>(0, 1),
-		std::make_unique<RectNoReflectFiller>(1, 0),
-		std::make_unique<RectNoReflectFiller>(1, 1)
-	);
+	std::vector<std::unique_ptr<filler>> fillers_ =
+		makeVector<std::unique_ptr<filler>>(
+			std::make_unique<RectNoReflectFiller>(0, 0),
+			std::make_unique<RectNoReflectFiller>(0, 1),
+			std::make_unique<RectNoReflectFiller>(1, 0),
+			std::make_unique<RectNoReflectFiller>(1, 1));
 
 	template <typename T>
 	// https://godbolt.org/z/ErejKM31E
@@ -43,10 +42,11 @@ public:
 			std::cout << std::to_string(i);
 		}
 	};
+
 private:
 	std::string templ;
 };
 
-}
+} // namespace terraformer
 
 #endif

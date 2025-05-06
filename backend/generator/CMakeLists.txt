@@ -14,7 +14,6 @@ set(SOURCES
 
 set(HEADERS 
 	${INCLUDE_DIR}/generator.h
-	${INCLUDE_DIR}/config_template.h
 )
 
 add_library(
