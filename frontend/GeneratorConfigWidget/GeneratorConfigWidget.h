@@ -23,6 +23,11 @@ public:
 	explicit GeneratorConfigWidget(QWidget *parent = nullptr);
 	~GeneratorConfigWidget();
 
+	terraformer::generator gen = {};
+
+signals:
+	void create_material_files();
+
 private slots:
 	void onGenerateClicked();
 	void onBrowseOutputFileClicked();
@@ -48,7 +53,6 @@ private:
 	void updateCorrectorListWidget(); // Show placeholder/disabled state
 
 	Ui::GeneratorConfigWidget *ui; // Pointer to UI definition
-
 	std::vector<std::unique_ptr<terraformer::filler>> fillers;
 };
 

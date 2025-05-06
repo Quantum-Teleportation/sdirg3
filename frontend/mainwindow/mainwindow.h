@@ -4,6 +4,8 @@
 #include "GeneratorConfigWidget.h"
 #include "area.h"
 
+#include <generator.h>
+
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -23,13 +25,13 @@ public:
 
 private slots:
 	void toggleGeneratorDock();
+	void create_material_files();
 
 private:
 	Ui::MainWindow *ui;
+
 	void newPolygon();
 	void selectPolygon(QUuid id);
-
-	void saveConfigs();
 
 	GeneratorConfigWidget *generatorConfigWidget = nullptr;
 };

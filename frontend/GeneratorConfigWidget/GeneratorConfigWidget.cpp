@@ -324,6 +324,8 @@ void GeneratorConfigWidget::onGenerateClicked() {
 			gen.saveAs(outputPath.toStdString());
 		}
 
+		emit create_material_files();
+
 		QMessageBox::information(
 			this, tr("Success"),
 			tr("Configuration file generated successfully:\n%1")
