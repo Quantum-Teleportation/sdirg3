@@ -1,0 +1,85 @@
+R"=====(
+verbose = true
+
+dt = <__DT__>
+steps = <__STEPS__>
+
+[grids]
+	[grid]
+		id = <__GRID_ID__>
+
+		[node]
+			name = ElasticMetaNode2D
+		[/node]
+
+		[material_node]
+			name = ElasticMaterialMetaNode
+		[/material_node]
+
+		[material]
+			c1 = 1
+			c2 = 1
+			rho = 1
+		[/material]
+
+		[factory]
+			name = RectGridFactory
+			size = <__SIZE__>
+			origin = <__ORIGIN__>
+			spacing = <__SPACING__>
+		[/factory]
+
+		[schema]
+			name = <__SCHEMA_NAME__>
+		[/schema]
+
+		[fillers]
+			<__FILLERS__>
+    [/fillers]
+
+    [correctors]
+			<__CORRECTORS__>
+    [/correctors]
+	
+	[/grid]
+[/grids]
+
+[contacts]
+[/contacts]
+
+[initials]
+    [initial]
+        name = StructuredFileLoader
+        path = main_vp.bin
+        value = c1
+        binary = true
+        order = 1
+    [/initial]
+    [initial]
+        name = StructuredFileLoader
+        path = main_vs.bin
+        value = c2
+        binary = true
+        order = 2
+    [/initial]
+    [initial]
+        name = StructuredFileLoader
+        path = main_rho.bin
+        value = rho
+        binary = true
+        order = 3
+    [/initial]
+[/initials]
+
+[savers]
+	[saver]
+		name = StructuredVTKSaver
+		path = vtk/%g_%s.vtk
+		order = 1
+		save = <__STEPS_FOR_SAVE__>
+		params = <__PARAMS__>
+		norms = <__NORMS__>
+	[/saver]
+[/savers]
+
+)====="

@@ -96,7 +96,7 @@ void Area::mousePressEvent(QMouseEvent *event) {
 			return;
 		}
 
-		auto &last_candidate = all_polygons[candidates.last()];
+		auto &last_candidate = *(candidates.last());
 		auto vertices = last_candidate.vertices;
 
 		// emit
@@ -126,8 +126,10 @@ void Area::mousePressEvent(QMouseEvent *event) {
 void Area::mouseMoveEvent(QMouseEvent *event) {
 	if (draggingVertex != -1) {
 		auto new_coord = event->pos() - dragOffset;
-		emit Mediator::instance() -> editVertexCoordMouse(draggingVertex,
-														  &new_coord);
+
+		// clang-format off
+		emit Mediator::instance() -> editVertexCoordMouse(draggingVertex, &new_coord);
+		// clang-format on
 	}
 }
 

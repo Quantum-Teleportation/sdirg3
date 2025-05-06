@@ -1,8 +1,11 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+
 #include "editor.h"
+#include "generator.h"
 
 #include <QPalette>
+#include <fstream>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -15,6 +18,14 @@ MainWindow::MainWindow(QWidget *parent)
 		}
 	});
 	ui->editorDock->close();
+
+	// --- New Generator Configuration Dock Setup ---
+	generatorConfigWidget = new GeneratorConfigWidget(ui->generatorDockWidget);
+	ui->generatorDockWidget->setWidget(generatorConfigWidget);
+	ui->generatorDockWidget->hide();
+	ui->toolBar->addAction(ui->actionConfig);
+	QObject::connect(ui->actionConfig, &QAction::triggered, this,
+					 &MainWindow::toggleGeneratorDock);
 
 	ui->tree->setHeaderHidden(true);
 	connect(ui->newPolygonBtn, &QPushButton::released, this,
@@ -104,6 +115,52 @@ void MainWindow::selectPolygon(QUuid id) {
 	Polygon *polygon = &all_polygons[id];
 	ui->editorDock->show();
 	emit Mediator::instance() -> onPolygonSelect(polygon);
+}
+
+void MainWindow::saveConfigs() {
+	qDebug() << "Emit Save configs";
+	terraformer::generator gen;
+	/* TODO: REFACTOR THIS PLZ
+		WHY YOU MUST WANTED:
+		perf say as that
+		 10.40%  cut              cut                            [.]
+	   QUuid::compareThreeWay_helper(QUuid const&, QUuid const&)
+	*/
+	// here we need to know more about matherials, their defaults and materials
+	// for polygon, sizes std::pair<std::size_t, std::size_t> factory_size =
+	// {2386, 828}; //gen.getFactorySize(); std::vector<float> default_material
+	// = {1, 1, 1}; // gen.getDefaultMaterialsValue(); std::vector<std::string>
+	// material_configs = {"main_vp.bin", "main_vs.bin", "main_rho.bin"}; //
+	// gen.getMaterialConfigsName();
+
+	// std::vector<std::vector<float>> material_values = {{}, {}, {}};
+	// // maybe we need here convert polygons coords using scale to fixed fabric
+	// size for (std::size_t x = 0, end_x = factory_size.first; x < end_x; ++x)
+	// { 	for (std::size_t y = 0, end_y = factory_size.second; y < end_y; ++y)
+	// { 		auto polygons = Geometry::find_polygons_by_point({x, y}); if
+	// (polygons.size() == 0) { 			for (std::size_t i = 0, prop_count =
+	// default_material.size(); i < prop_count; ++i)
+	// material_values[i].push_back(default_material[i]); 		} else {
+	// 			// TODO: refactor material in polygon to vector of float
+	// properties of material 			for(std::size_t i = 0, prop_count =
+	// material_configs.size(); i < prop_count; ++i)
+	// 				material_values[i].push_back(polygons[0]->material_);
+	// 		}
+	// 	}
+	// }
+	// // now let's just save as binary files
+	// for (std::size_t i = 0, end = material_configs.size(); i < end; ++i) {
+	// 	std::ofstream out(material_configs[i], std::ios::out |
+	// std::ios::binary); 	out.write(reinterpret_cast<const
+	// char*>(material_values[i].data()),
+	// material_values[i].size()*sizeof(float)); 	out.close();
+	// }
+	// after generate materials bin save config
+	gen.saveAs("test.conf");
+}
+
+void MainWindow::toggleGeneratorDock() {
+	ui->generatorDockWidget->setVisible(!ui->generatorDockWidget->isVisible());
 }
 
 MainWindow::~MainWindow() { delete ui; }

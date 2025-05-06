@@ -12,27 +12,28 @@ bool is_segment_intersected(const QPointF &a1, const QPointF &a2,
 		   orientated_area(b1, b2, a1) * orientated_area(b1, b2, a2) <= 0;
 }
 
-bool point_in_polygon(const QPointF &p, QUuid polygon_id) {
+bool point_in_polygon(const QPointF &p, const Polygon &polygon) {
 	QPointF ray(922337203685477632, 0);
 	// TODO: what if this rand ray is equal to polygon vertex???
 	std::size_t crossings = 0;
-	for (auto &edge : all_polygons[polygon_id].edges) {
+	for (auto &edge : polygon.edges) {
+		auto e = all_edges.find(edge).value();
 		if (is_segment_intersected(
-				p, ray, all_vertices[all_edges[edge].coords().first],
-				all_vertices[all_edges[edge].coords().second])) {
+				p, ray, all_vertices.find(e.coords().first).value(),
+				all_vertices.find(e.coords().second).value())) {
 			++crossings;
 		}
 	}
 	return crossings & 1;
 }
 
-QVector<QUuid> find_polygons_by_point(const QPointF &p) {
-	QVector<QUuid> polygons;
+QVector<Polygon *> find_polygons_by_point(const QPointF &p) {
+	QVector<Polygon *> polygons;
 
 	// mb std::for_each here better?
-	for (const auto &polygon : all_polygons) {
-		if (point_in_polygon(p, polygon.id())) {
-			polygons.append(polygon.id());
+	for (auto &polygon : all_polygons) {
+		if (point_in_polygon(p, polygon)) {
+			polygons.append(&polygon);
 		}
 	}
 	return polygons;

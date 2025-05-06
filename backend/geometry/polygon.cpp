@@ -13,8 +13,8 @@ QUuid Polygon::gen_uuid() {
 Polygon::Polygon(const QVector<QUuid> &vertices, const QVector<QUuid> &edges,
 				 const QString &name, const int material,
 				 const int existingNumber, const QUuid &existingId)
-	: edges(edges), vertices(vertices), name_(name),
-	  cur_polygon_number_(existingNumber), material_(material) {
+	: edges(edges), vertices(vertices), material_(material), name_(name),
+	  cur_polygon_number_(existingNumber) {
 	id_ = (existingId.isNull()) ? gen_uuid() : existingId;
 	all_polygons[id_] = *this;
 

@@ -94,11 +94,44 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2"/>
   </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QDockWidget" name="generatorDockWidget">
+   <property name="windowTitle">
+    <string>Generator Configuration</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3"/>
+  </widget>
+  <action name="actionConfig">
+   <property name="text">
+    <string>Config</string>
+   </property>
+   <property name="toolTip">
+    <string>Config</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::ApplicationSpecificRole</enum>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>Area</class>
-   <extends>QWidget</extends>
    <container>1</container>
   </customwidget>
  </customwidgets>
