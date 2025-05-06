@@ -23,6 +23,11 @@ public:
 	explicit GeneratorConfigWidget(QWidget *parent = nullptr);
 	~GeneratorConfigWidget();
 
+	terraformer::generator gen = {};
+
+signals:
+	void create_material_files();
+
 private slots:
 	void onGenerateClicked();
 	void onBrowseOutputFileClicked();
