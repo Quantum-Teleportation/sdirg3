@@ -44,10 +44,10 @@
     <string notr="true"/>
    </property>
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::DockWidgetFeature::DockWidgetFloatable|QDockWidget::DockWidgetFeature::DockWidgetMovable</set>
    </property>
    <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea</set>
+    <set>Qt::DockWidgetArea::LeftDockWidgetArea</set>
    </property>
    <property name="windowTitle">
     <string>Objects</string>
@@ -67,7 +67,7 @@
      <item>
       <widget class="QTreeWidget" name="tree">
        <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
+        <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
        </property>
        <property name="sortingEnabled">
         <bool>true</bool>
@@ -84,7 +84,7 @@
   </widget>
   <widget class="QDockWidget" name="editorDock">
    <property name="allowedAreas">
-    <set>Qt::BottomDockWidgetArea</set>
+    <set>Qt::DockWidgetArea::BottomDockWidgetArea</set>
    </property>
    <property name="windowTitle">
     <string/>
@@ -105,15 +105,27 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <action name="actionSave">
+  <widget class="QDockWidget" name="generatorDockWidget">
+   <property name="windowTitle">
+    <string>Generator Configuration</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3"/>
+  </widget>
+  <action name="actionConfig">
    <property name="text">
-    <string>Save</string>
+    <string>Config</string>
+   </property>
+   <property name="toolTip">
+    <string>Config</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::ApplicationSpecificRole</enum>
+    <enum>QAction::MenuRole::ApplicationSpecificRole</enum>
    </property>
   </action>
  </widget>

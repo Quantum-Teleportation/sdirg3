@@ -1,18 +1,21 @@
 set(UI_HEADERS
 	mainwindow/mainwindow.ui
 	editor/editor.ui
+	GeneratorConfigWidget/GeneratorConfigWidget.ui
 )
 
 set(HEADERS
 	mainwindow/mainwindow.h
 	editor/editor.h
 	area/area.h
+	GeneratorConfigWidget/GeneratorConfigWidget.h
 )
 
 set(SOURCES 
 	mainwindow/mainwindow.cpp
 	editor/editor.cpp
 	area/area.cpp
+	GeneratorConfigWidget/GeneratorConfigWidget.cpp
 	main.cpp
 )
 
@@ -50,5 +53,6 @@ target_include_directories(
 	area
 	editor
 	mainwindow
+	GeneratorConfigWidget
 )
 

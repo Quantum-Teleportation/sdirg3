@@ -1,7 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "GeneratorConfigWidget.h"
 #include "area.h"
+
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -19,12 +21,16 @@ public:
 	void removePolygon(QUuid id);
 	~MainWindow();
 
+private slots:
+	void toggleGeneratorDock();
+
 private:
 	Ui::MainWindow *ui;
 	void newPolygon();
 	void selectPolygon(QUuid id);
 
 	void saveConfigs();
-	// Editor editor;
+
+	GeneratorConfigWidget *generatorConfigWidget = nullptr;
 };
 #endif // MAINWINDOW_H
