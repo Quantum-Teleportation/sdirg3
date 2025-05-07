@@ -8,4 +8,7 @@ void RectNoReflectFiller::Serialize_(std::stringstream &out) const {
 	out << "axis = " << static_cast<int>(axis) << std::endl;
 	out << "side = " << static_cast<int>(side) << std::endl;
 }
+
+REGISTER_CLASS(RectNoReflectFiller);
+
 } // namespace terraformer

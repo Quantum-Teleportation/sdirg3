@@ -8,16 +8,20 @@ namespace terraformer {
 
 using namespace std::string_literals;
 
-DEFINE_BASE(corrector);
+class Corrector : public BaseHelper {
+public:
+	Corrector() : BaseHelper("corrector") {}
+	virtual ~Corrector() = 0;
+};
 
-class PointSourceCorrector2D : public corrector {
+class PointSourceCorrector2D : public Corrector {
 public:
 private:
 	// only append in string
 	virtual void Serialize_(std::stringstream &) const override {}
 };
 
-class ForceRectElasticBoundary2D : public corrector {
+class ForceRectElasticBoundary2D : public Corrector {
 public:
 private:
 	// only append in string

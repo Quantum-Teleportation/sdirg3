@@ -1,6 +1,7 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+#include <factory.h>
 #include <fillers.h>
 #include <fstream>
 #include <iostream>
@@ -24,12 +25,15 @@ public:
 	// method for generating config from template
 	void saveAs(const std::string &out_file);
 
-	std::vector<std::unique_ptr<filler>> fillers_ =
-		makeVector<std::unique_ptr<filler>>(
+	std::vector<std::unique_ptr<Filler>> fillers_ =
+		makeVector<std::unique_ptr<Filler>>(
 			std::make_unique<RectNoReflectFiller>(0, 0),
 			std::make_unique<RectNoReflectFiller>(0, 1),
 			std::make_unique<RectNoReflectFiller>(1, 0),
 			std::make_unique<RectNoReflectFiller>(1, 1));
+
+	std::unique_ptr<RectGridFactory> factory_ =
+		std::make_unique<RectGridFactory>();
 
 	template <typename T>
 	// https://godbolt.org/z/ErejKM31E
