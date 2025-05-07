@@ -8,8 +8,8 @@ int main(int argc, char *argv[]) {
 	MainWindow w;
 	w.show();
 
-	terraformer::generator gen;
-	gen.saveAs("test.conf");
+	// terraformer::generator gen;
+	// gen.saveAs("test.conf");
 
 	return a.exec();
 }
