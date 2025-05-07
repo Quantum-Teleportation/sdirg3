@@ -9,5 +9,4 @@ void RectGridFactory::Serialize_(std::stringstream &out) const {
 		<< std::endl;
 }
 
-
 } // namespace terraformer

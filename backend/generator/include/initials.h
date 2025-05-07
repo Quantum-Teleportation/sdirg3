@@ -17,24 +17,25 @@ public:
 inline Initial::~Initial() {}
 
 class StructuredFileLoader : public Initial {
-    DEFINE_CLASSNAME(StructuredFileLoader);
+	DEFINE_CLASSNAME(StructuredFileLoader);
 
 public:
-    std::string value_ = "rho"; // = rho
-    std::string path_ = "main_"s + value_ + ".bin"s; //  = main_rho.bin
+	std::string value_ = "rho";						 // = rho
+	std::string path_ = "main_"s + value_ + ".bin"s; //  = main_rho.bin
 
-    bool binary_ = true; // = true
-    size_t order_ = 0; // 3
+	bool binary_ = true; // = true
+	size_t order_ = 0;	 // 3
 
-    StructuredFileLoader() {}
+	StructuredFileLoader() {}
 
-    StructuredFileLoader *Init(const std::string &value, const std::string path, bool binary, size_t order) {
-        value_ = value;
-        path_ = path;
-        binary_ = binary;
-        order_ = order;
-        return this;
-    }
+	StructuredFileLoader *Init(const std::string &value, const std::string path,
+							   bool binary, size_t order) {
+		value_ = value;
+		path_ = path;
+		binary_ = binary;
+		order_ = order;
+		return this;
+	}
 
 private:
 	void Serialize_(std::stringstream &) const override;
