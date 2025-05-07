@@ -156,14 +156,14 @@ int Area::findVertexAt(const QPoint widgetPos, const Polygon* polygon) {
 		QPointF backendVertexPos(v.x(), v.y());
 
 		// Convert backend position to the position where it's DRAWN in widget pixels
-		QPointF drawnWidgetPos = (backendVertexPos + QPointF(coordOffset, coordOffset)) * scaleFactor;
+		QPointF drawnWidgetPos = (backendVertexPos + QPointF(coordOffset / scaleFactor, coordOffset / scaleFactor)) * scaleFactor;
 
 		// Create a hit test rectangle around the drawn position in widget pixels
 		QRectF hitRect(drawnWidgetPos.x() - hit_radius_pixels, drawnWidgetPos.y() - hit_radius_pixels,
 										2 * hit_radius_pixels, 2 * hit_radius_pixels);
 
 		if (hitRect.contains(widgetPos)) {
-			// qDebug() << "Hit vertex" << i << "at backend coord:" << backendVertexPos << "drawn at:" << drawnWidgetPos;
+			// qDebug() << "Hit vertex" << i << "at backend coord:" << backendVertexPos << "drawn at:" << drawnWidgetPos; 
 			return i;
 		}
 	}
@@ -189,7 +189,7 @@ void Area::mousePressEvent(QMouseEvent *event) {
 
 		// If no vertex was grabbed, check for polygon selection
 		QPointF widgetPosF(widgetPos);
-		QPointF backendPos = widgetPosF / scaleFactor - QPointF(coordOffset, coordOffset);
+		QPointF backendPos = widgetPosF / scaleFactor - QPointF(coordOffset / scaleFactor, coordOffset/ scaleFactor);
 		auto candidates = Geometry::find_polygons_by_point(backendPos);
 
 		if (candidates.size() == 0) {
@@ -236,7 +236,6 @@ void Area::mouseMoveEvent(QMouseEvent *event) {
 		} else {
 			unsetCursor();
 		}
-		// unsetCursor();
 	}
 }
 
