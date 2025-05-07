@@ -59,6 +59,17 @@ void generator::saveAs(const std::string &out_file) {
 		replacer("<__FACTORY__>", factory_->Serialize());
 	} while (0);
 
+
+	// initials
+	do {
+		std::string initialsOut = "";
+		for (const auto &i : initials_) {
+			initialsOut += i->Serialize();
+		}
+		replacer("<__INITIALS__>", initialsOut);
+	} while (0);
+
+
 	// TODO: add internal class for corrector (?) (with to_string method)
 	std::vector<std::string> default_correctors = {
 		"[corrector]\nname = "
