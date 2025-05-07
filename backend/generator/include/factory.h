@@ -17,7 +17,8 @@ public:
 inline Factory::~Factory() {}
 
 class RectGridFactory : public Factory {
-    DEFINE_CLASSNAME(RectGridFactory);
+	DEFINE_CLASSNAME(RectGridFactory);
+
 public:
 	RectGridFactory() {}
 

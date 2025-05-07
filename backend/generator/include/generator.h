@@ -3,8 +3,8 @@
 
 #include <factory.h>
 #include <fillers.h>
-#include <initials.h>
 #include <fstream>
+#include <initials.h>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -28,20 +28,29 @@ public:
 
 	std::vector<std::unique_ptr<Filler>> fillers_ =
 		makeVector<std::unique_ptr<Filler>>(
-			std::unique_ptr<RectNoReflectFiller>(CREATE_CLASS(Filler, RectNoReflectFiller)->Init(0, 0)),
-			std::unique_ptr<RectNoReflectFiller>(CREATE_CLASS(Filler, RectNoReflectFiller)->Init(0, 1)),
-			std::unique_ptr<RectNoReflectFiller>(CREATE_CLASS(Filler, RectNoReflectFiller)->Init(1, 0)),
-			std::unique_ptr<RectNoReflectFiller>(CREATE_CLASS(Filler, RectNoReflectFiller)->Init(1, 1))
-		);
+			std::unique_ptr<RectNoReflectFiller>(
+				CREATE_CLASS(Filler, RectNoReflectFiller)->Init(0, 0)),
+			std::unique_ptr<RectNoReflectFiller>(
+				CREATE_CLASS(Filler, RectNoReflectFiller)->Init(0, 1)),
+			std::unique_ptr<RectNoReflectFiller>(
+				CREATE_CLASS(Filler, RectNoReflectFiller)->Init(1, 0)),
+			std::unique_ptr<RectNoReflectFiller>(
+				CREATE_CLASS(Filler, RectNoReflectFiller)->Init(1, 1)));
 
-	std::unique_ptr<RectGridFactory> factory_{CREATE_CLASS(Factory, RectGridFactory)};
+	std::unique_ptr<RectGridFactory> factory_{
+		CREATE_CLASS(Factory, RectGridFactory)};
 
 	std::vector<std::unique_ptr<Initial>> initials_ =
 		makeVector<std::unique_ptr<Initial>>(
-			std::unique_ptr<StructuredFileLoader>(CREATE_CLASS(Initial, StructuredFileLoader)->Init("c1", "main_vp.bin", true, 1)),
-			std::unique_ptr<StructuredFileLoader>(CREATE_CLASS(Initial, StructuredFileLoader)->Init("c2", "main_vs.bin", true, 2)),
-			std::unique_ptr<StructuredFileLoader>(CREATE_CLASS(Initial, StructuredFileLoader)->Init("rho", "main_rho.bin", true, 3))
-		);
+			std::unique_ptr<StructuredFileLoader>(
+				CREATE_CLASS(Initial, StructuredFileLoader)
+					->Init("c1", "main_vp.bin", true, 1)),
+			std::unique_ptr<StructuredFileLoader>(
+				CREATE_CLASS(Initial, StructuredFileLoader)
+					->Init("c2", "main_vs.bin", true, 2)),
+			std::unique_ptr<StructuredFileLoader>(
+				CREATE_CLASS(Initial, StructuredFileLoader)
+					->Init("rho", "main_rho.bin", true, 3)));
 
 	float dt = 0.0002;
 	std::size_t nsteps = 5000;

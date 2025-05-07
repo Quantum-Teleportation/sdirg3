@@ -359,8 +359,8 @@ void GeneratorConfigWidget::onAddFillerClicked() { // FIXME
 
 	// Create and add the new filler
 	using namespace terraformer;
-	gen.fillers_.push_back(
-		std::unique_ptr<RectNoReflectFiller>(CREATE_CLASS(Filler, RectNoReflectFiller)->Init(side, axis)));
+	gen.fillers_.push_back(std::unique_ptr<RectNoReflectFiller>(
+		CREATE_CLASS(Filler, RectNoReflectFiller)->Init(side, axis)));
 	updateFillerListWidget(); // Refresh the UI list
 	qDebug() << "Added RectNoReflectFiller: Axis=" << static_cast<int>(axis)
 			 << "Side=" << static_cast<int>(side) << gen.fillers_.size();
