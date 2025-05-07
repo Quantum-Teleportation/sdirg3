@@ -49,7 +49,7 @@ private:
 
 	Ui::GeneratorConfigWidget *ui; // Pointer to UI definition
 
-	std::vector<std::unique_ptr<terraformer::filler>> fillers;
+	std::vector<std::unique_ptr<terraformer::Filler>> fillers;
 };
 
 #endif // GENERATOR_CONFIG_WIDGET_H

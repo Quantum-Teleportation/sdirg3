@@ -15,13 +15,6 @@ void generator::saveAs(const std::string &out_file) {
 	[[maybe_unused]] std::size_t default_steps = 5000;
 	std::string default_grid_id = "default_grid";
 
-	[[maybe_unused]] std::pair<std::size_t, std::size_t> default_factory_size =
-		{2386, 828};
-	[[maybe_unused]] std::pair<std::size_t, std::size_t>
-		default_factory_origin = {0, 0};
-	[[maybe_unused]] std::pair<float, float> defailt_factory_spacing = {1.6,
-																		1.6};
-
 	std::string default_schema_name = "ElasticMatRectSchema2DRusanov3";
 	// TODO: add internal class for fillers information with to_string method
 
@@ -37,20 +30,19 @@ void generator::saveAs(const std::string &out_file) {
 		}
 	};
 
-	{
+	// fillers
+	do {
 		std::string fillerOut = "";
 		for (const auto &f : fillers_) {
 			fillerOut += f->Serialize();
 		}
 		replacer("<__FILLERS__>", fillerOut);
-	}
+	} while (0);
 
-	// std::vector<std::string> default_fillers = {
-	// 	"[filler]\nname = RectNoReflectFiller\naxis=0\nside=0\n[/filler]",
-	// 	"[filler]\nname = RectNoReflectFiller\naxis=0\nside=1\n[/filler]",
-	// 	"[filler]\nname = RectNoReflectFiller\naxis=1\nside=0\n[/filler]",
-	// 	"[filler]\nname = RectNoReflectFiller\naxis=1\nside=1\n[/filler]"
-	// };
+	// factory
+	do {
+		replacer("<__FACTORY__>", factory_->Serialize());
+	} while (0);
 
 	// TODO: add internal class for corrector (?) (with to_string method)
 	std::vector<std::string> default_correctors = {
