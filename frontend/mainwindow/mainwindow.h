@@ -35,6 +35,6 @@ private:
 	void selectPolygon(QUuid id);
 
 	GeneratorConfigWidget *generatorConfigWidget = nullptr;
-	QScrollArea* 	scrollArea = nullptr;
+	QScrollArea *scrollArea = nullptr;
 };
 #endif // MAINWINDOW_H

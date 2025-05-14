@@ -40,6 +40,10 @@ public:
 	std::string grid_id = "default_grid";
 	std::string schema_name = "ElasticMatRectSchema2DRusanov3";
 
+	// savers default values
+	std::string params = "v";
+	std::size_t norms = 1;
+
 	template <typename T>
 	// https://godbolt.org/z/ErejKM31E
 	struct Field final {

@@ -5,11 +5,10 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPointF>
-#include <QVector2D>
 #include <QPolygonF>
-#include <QPainter>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QVector2D>
 
 Area::Area(QWidget *parent) : QWidget{parent} {
 	connect(Mediator::instance(), &Mediator::onBufferConnect, this,
@@ -25,12 +24,14 @@ Area::Area(QWidget *parent) : QWidget{parent} {
 
 	setMouseTracking(true); // For check mouse position
 
-	setMinimumSize(QSize(1000 + 2 * coordOffset, 1000 + 2 * coordOffset)); // TODO: think about default size 
+	setMinimumSize(
+		QSize(1000 + 2 * coordOffset,
+			  1000 + 2 * coordOffset)); // TODO: think about default size
 }
 
 void Area::paintEvent([[maybe_unused]] QPaintEvent *event) {
 	QPainter painter(this);
-	if(!painter.isActive()) {
+	if (!painter.isActive()) {
 		painter.begin(this);
 	}
 	painter.translate(coordOffset, coordOffset);
@@ -43,8 +44,11 @@ void Area::paintEvent([[maybe_unused]] QPaintEvent *event) {
 	axisPen.setColor(Qt::gray);
 	axisPen.setWidth(1 / scaleFactor);
 	painter.setPen(axisPen);
-	painter.drawLine(QPointF(0, 0), QPointF(width() / scaleFactor + coordOffset / scaleFactor, 0));
-	painter.drawLine(QPointF(0, 0), QPointF(0, height() / scaleFactor + coordOffset / scaleFactor));
+	painter.drawLine(
+		QPointF(0, 0),
+		QPointF(width() / scaleFactor + coordOffset / scaleFactor, 0));
+	painter.drawLine(QPointF(0, 0), QPointF(0, height() / scaleFactor +
+												   coordOffset / scaleFactor));
 
 	// точки на осях
 	QFont axisFont;
@@ -52,15 +56,21 @@ void Area::paintEvent([[maybe_unused]] QPaintEvent *event) {
 	painter.setFont(axisFont);
 	int tickStep = 100;
 	double tickHalfSize = 5 / scaleFactor;
-	for (int curTick = 0; curTick < (width() - coordOffset) / scaleFactor; curTick += tickStep) {
-		if (curTick == 0) continue; // Avoid drawing 0 tick twice
+	for (int curTick = 0; curTick < (width() - coordOffset) / scaleFactor;
+		 curTick += tickStep) {
+		if (curTick == 0)
+			continue; // Avoid drawing 0 tick twice
 		painter.drawLine(curTick, -tickHalfSize, curTick, tickHalfSize);
 		painter.drawText(curTick, -tickHalfSize, QString::number(curTick));
 	}
-	for (int curTick = tickStep; curTick < (height() - coordOffset) / scaleFactor; curTick += tickStep) {
-		if (curTick == 0) continue; // Avoid drawing 0 tick twice
+	for (int curTick = tickStep;
+		 curTick < (height() - coordOffset) / scaleFactor;
+		 curTick += tickStep) {
+		if (curTick == 0)
+			continue; // Avoid drawing 0 tick twice
 		painter.drawLine(-tickHalfSize, curTick, tickHalfSize, curTick);
-		painter.drawText(-coordOffset, curTick + tickHalfSize, QString::number(curTick));
+		painter.drawText(-coordOffset, curTick + tickHalfSize,
+						 QString::number(curTick));
 	}
 
 	QPen normalPen;
@@ -68,8 +78,8 @@ void Area::paintEvent([[maybe_unused]] QPaintEvent *event) {
 	normalPen.setColor(Qt::black);
 	painter.setPen(normalPen);
 
-	// полигоны 
-	/* FIXME: Плохо, что мы получаем полигоны из глобальной переменной.  
+	// полигоны
+	/* FIXME: Плохо, что мы получаем полигоны из глобальной переменной.
 	 * Эти данные должен предоставлять слой контроллера/сервиса. */
 	for (auto polygons = all_polygons.begin(); polygons != all_polygons.end();
 		 ++polygons) {
@@ -82,7 +92,8 @@ void Area::paintEvent([[maybe_unused]] QPaintEvent *event) {
 			Vertex &curV = all_vertices[vertices[i]];
 			Vertex &nextV = all_vertices[vertices[(i + 1) % vertices.size()]];
 
-			painter.drawEllipse(QPointF(curV.x(), curV.y()), 3.0 / scaleFactor, 3.0 / scaleFactor);
+			painter.drawEllipse(QPointF(curV.x(), curV.y()), 3.0 / scaleFactor,
+								3.0 / scaleFactor);
 			painter.drawLine(QPointF(curV.x(), curV.y()),
 							 QPointF(nextV.x(), nextV.y()));
 		}
@@ -106,9 +117,10 @@ void Area::paintEvent([[maybe_unused]] QPaintEvent *event) {
 			} else {
 				nextPoint = bufferData[0][0];
 			}
-			painter.drawEllipse(QPointF(point.x(), point.y()), 3.0 / scaleFactor, 3.0 / scaleFactor);
+			painter.drawEllipse(QPointF(point.x(), point.y()),
+								3.0 / scaleFactor, 3.0 / scaleFactor);
 			painter.drawLine(QPointF(point.x(), point.y()),
-							QPointF(nextPoint.x(), nextPoint.y()));
+							 QPointF(nextPoint.x(), nextPoint.y()));
 		}
 	}
 
@@ -118,23 +130,23 @@ void Area::paintEvent([[maybe_unused]] QPaintEvent *event) {
 	highlightPen.setWidth(4.0 / scaleFactor);
 	painter.setPen(highlightPen);
 
-	/* FIXME: Плохо, что мы получаем полигоны из глобальной переменной.  
+	/* FIXME: Плохо, что мы получаем полигоны из глобальной переменной.
 	 * Эти данные должен предоставлять слой контроллера/сервиса. */
 	if (highlightedPolygon != nullptr) {
-		for (auto& edgeId : highlightedPolygon->edges) {
-			Edge& edge = all_edges[edgeId];
-			Vertex& v1 = all_vertices[edge.coords().first];
-			Vertex& v2 = all_vertices[edge.coords().second];
+		for (auto &edgeId : highlightedPolygon->edges) {
+			Edge &edge = all_edges[edgeId];
+			Vertex &v1 = all_vertices[edge.coords().first];
+			Vertex &v2 = all_vertices[edge.coords().second];
 			QLineF line({v1.x(), v1.y()}, {v2.x(), v2.y()});
 			painter.drawLine(line);
 		}
-	}
-	else if (pointHighlighted.x() != -1) {
+	} else if (pointHighlighted.x() != -1) {
 		QBrush vertexBrush;
 		vertexBrush.setStyle(Qt::SolidPattern);
 		vertexBrush.setColor(Qt::blue);
 		painter.setBrush(vertexBrush);
-		painter.drawEllipse(pointHighlighted, 5.0 / scaleFactor, 5.0 / scaleFactor);
+		painter.drawEllipse(pointHighlighted, 5.0 / scaleFactor,
+							5.0 / scaleFactor);
 	} else if (lineHighlighted.length()) {
 		painter.drawLine(lineHighlighted);
 	}
@@ -144,26 +156,34 @@ void Area::paintEvent([[maybe_unused]] QPaintEvent *event) {
 
 // Helper function to find vertex near mouse position (in widget pixels)
 // Returns index in editedPolygon->vertices or -1 if none found
-int Area::findVertexAt(const QPoint widgetPos, const Polygon* polygon) {
-	const Polygon* targetPolygon = polygon ? polygon : editedPolygon;
+int Area::findVertexAt(const QPoint widgetPos, const Polygon *polygon) {
+	const Polygon *targetPolygon = polygon ? polygon : editedPolygon;
 
-	if (!targetPolygon || targetPolygon->vertices.isEmpty()) return -1;
+	if (!targetPolygon || targetPolygon->vertices.isEmpty())
+		return -1;
 
-	const QVector<QUuid>& vertices = targetPolygon->vertices;
+	const QVector<QUuid> &vertices = targetPolygon->vertices;
 
 	for (int i = 0; i < vertices.size(); ++i) {
-		const Vertex& v = all_vertices[vertices.at(i)];
+		const Vertex &v = all_vertices[vertices.at(i)];
 		QPointF backendVertexPos(v.x(), v.y());
 
-		// Convert backend position to the position where it's DRAWN in widget pixels
-		QPointF drawnWidgetPos = (backendVertexPos + QPointF(coordOffset / scaleFactor, coordOffset / scaleFactor)) * scaleFactor;
+		// Convert backend position to the position where it's DRAWN in widget
+		// pixels
+		QPointF drawnWidgetPos =
+			(backendVertexPos +
+			 QPointF(coordOffset / scaleFactor, coordOffset / scaleFactor)) *
+			scaleFactor;
 
-		// Create a hit test rectangle around the drawn position in widget pixels
-		QRectF hitRect(drawnWidgetPos.x() - hit_radius_pixels, drawnWidgetPos.y() - hit_radius_pixels,
-										2 * hit_radius_pixels, 2 * hit_radius_pixels);
+		// Create a hit test rectangle around the drawn position in widget
+		// pixels
+		QRectF hitRect(drawnWidgetPos.x() - hit_radius_pixels,
+					   drawnWidgetPos.y() - hit_radius_pixels,
+					   2 * hit_radius_pixels, 2 * hit_radius_pixels);
 
 		if (hitRect.contains(widgetPos)) {
-			// qDebug() << "Hit vertex" << i << "at backend coord:" << backendVertexPos << "drawn at:" << drawnWidgetPos; 
+			// qDebug() << "Hit vertex" << i << "at backend coord:" <<
+			// backendVertexPos << "drawn at:" << drawnWidgetPos;
 			return i;
 		}
 	}
@@ -175,41 +195,47 @@ void Area::mousePressEvent(QMouseEvent *event) {
 		QPoint widgetPos = event->pos();
 		int hitIndex = findVertexAt(widgetPos, editedPolygon);
 
-		
-		if(hitIndex != -1) {  // Drag start
+		if (hitIndex != -1) { // Drag start
 			draggingVertex = hitIndex;
 			// Get the backend position of the grabbed vertex
-			const Vertex& v = all_vertices[editedPolygon->vertices.at(draggingVertex)];
+			const Vertex &v =
+				all_vertices[editedPolygon->vertices.at(draggingVertex)];
 			QPointF backendVertexPos(v.x(), v.y());
-			QPointF drawnWidgetPos = (backendVertexPos + QPointF(coordOffset, coordOffset)) * scaleFactor;
+			QPointF drawnWidgetPos =
+				(backendVertexPos + QPointF(coordOffset, coordOffset)) *
+				scaleFactor;
 			dragOffset = widgetPos - drawnWidgetPos.toPoint();
-			emit Mediator::instance()->editVertexMouse(draggingVertex);
-			return; // Vertex was grabbed, don't proceed to polygon selection or adding
+			emit Mediator::instance() -> editVertexMouse(draggingVertex);
+			return; // Vertex was grabbed, don't proceed to polygon selection or
+					// adding
 		}
 
 		// If no vertex was grabbed, check for polygon selection
 		QPointF widgetPosF(widgetPos);
-		QPointF backendPos = widgetPosF / scaleFactor - QPointF(coordOffset / scaleFactor, coordOffset/ scaleFactor);
+		QPointF backendPos =
+			widgetPosF / scaleFactor -
+			QPointF(coordOffset / scaleFactor, coordOffset / scaleFactor);
 		auto candidates = Geometry::find_polygons_by_point(backendPos);
 
 		if (candidates.size() == 0) {
-            // If no polygon was selected, add a new vertex
-			emit Mediator::instance()->addNewVertex(backendPos);
+			// If no polygon was selected, add a new vertex
+			emit Mediator::instance() -> addNewVertex(backendPos);
 			return; // Vertex added, don't proceed
 		}
 
 		// If a polygon was selected, signal it
 		auto &last_candidate = *(candidates.last());
-		emit Mediator::instance()->onPolygonSelect(&last_candidate); 
+		emit Mediator::instance() -> onPolygonSelect(&last_candidate);
 	} else if ((event->button() == Qt::RightButton)) {
 		// Debug: Print all vertex coordinates
-		for (auto iter = all_vertices.begin(); iter != all_vertices.end(); ++iter) {
+		for (auto iter = all_vertices.begin(); iter != all_vertices.end();
+			 ++iter) {
 			qDebug() << "Backend Vertex:" << QPointF(iter->x(), iter->y());
 		}
 		// Debug: Print edited polygon buffer coordinates
 		if (bufferData) {
 			qDebug() << "Editor Buffer (Backend Coords):";
-			for(const auto& p : *bufferData) {
+			for (const auto &p : *bufferData) {
 				qDebug() << QPointF(p.x(), p.y());
 			}
 		}
@@ -220,7 +246,8 @@ void Area::mouseMoveEvent(QMouseEvent *event) {
 	if (draggingVertex != -1) {
 		QPoint widgetPos = event->pos();
 		QPointF newDrawnWidgetPos = widgetPos - dragOffset;
-		QPointF newBackendPos = newDrawnWidgetPos / scaleFactor - QPointF(coordOffset, coordOffset);
+		QPointF newBackendPos =
+			newDrawnWidgetPos / scaleFactor - QPointF(coordOffset, coordOffset);
 
 		// clang-format off
 		emit Mediator::instance() -> editVertexCoordMouse(draggingVertex, newBackendPos);
@@ -229,7 +256,8 @@ void Area::mouseMoveEvent(QMouseEvent *event) {
 	} else {
 		bool nearVertex = findVertexAt(event->pos(), editedPolygon) != -1;
 		if (!nearVertex) {
-			nearVertex = findVertexAt(event->pos(), nullptr) != -1; // Check all polygons
+			nearVertex =
+				findVertexAt(event->pos(), nullptr) != -1; // Check all polygons
 		}
 		if (nearVertex) {
 			setCursor(Qt::PointingHandCursor);
@@ -256,7 +284,7 @@ void Area::wheelEvent(QWheelEvent *event) {
 
 	if (deltaY > 0) {
 		currentFactor = scaleStep;
-	} else if (deltaY < 0){
+	} else if (deltaY < 0) {
 		currentFactor = 1.0 / scaleStep;
 	} else {
 		return;
@@ -264,21 +292,29 @@ void Area::wheelEvent(QWheelEvent *event) {
 
 	// Get the position in widget pixels where the mouse is centered
 	QPointF widgetPos = event->position();
-	// Convert this widget position to the *backend* coordinate that is under the mouse
-	QPointF backendPosBefore = widgetPos / scaleFactor - QPointF(coordOffset, coordOffset);
+	// Convert this widget position to the *backend* coordinate that is under
+	// the mouse
+	QPointF backendPosBefore =
+		widgetPos / scaleFactor - QPointF(coordOffset, coordOffset);
 	scaleFactor *= currentFactor;
 	// TODO: think about minimum and maximum zoom
-	if (scaleFactor < 1.0) scaleFactor = 1.0;	// Minimum zoom out
-	if (scaleFactor > 3.0) scaleFactor = 3.0;	// Maximum zoom in 
+	if (scaleFactor < 1.0)
+		scaleFactor = 1.0; // Minimum zoom out
+	if (scaleFactor > 3.0)
+		scaleFactor = 3.0; // Maximum zoom in
 
-	// Calculate the new drawn position of the *same backend coordinate* after scaling
-	QPointF newDrawnWidgetPos = (backendPosBefore + QPointF(coordOffset, coordOffset)) * scaleFactor;
+	// Calculate the new drawn position of the *same backend coordinate* after
+	// scaling
+	QPointF newDrawnWidgetPos =
+		(backendPosBefore + QPointF(coordOffset, coordOffset)) * scaleFactor;
 
-	// Calculate the difference between the mouse position (widgetPos) and the new drawn position
-	// This difference is the translation needed to keep the point under the mouse
+	// Calculate the difference between the mouse position (widgetPos) and the
+	// new drawn position This difference is the translation needed to keep the
+	// point under the mouse
 	QPointF translationNeeded = widgetPos - newDrawnWidgetPos;
 
-	if (QScrollArea *parentScrollArea = qobject_cast<QScrollArea *>(parentWidget())) {
+	if (QScrollArea *parentScrollArea =
+			qobject_cast<QScrollArea *>(parentWidget())) {
 		QScrollBar *hBar = parentScrollArea->horizontalScrollBar();
 		QScrollBar *vBar = parentScrollArea->verticalScrollBar();
 		if (hBar && vBar) {
@@ -287,10 +323,11 @@ void Area::wheelEvent(QWheelEvent *event) {
 		}
 	}
 
-	double contentWidth  = 1000.0;
+	double contentWidth = 1000.0;
 	double contentHeight = 1000.0;
-	setMinimumSize(QSize((contentWidth + coordOffset) * scaleFactor + coordOffset,
-											 (contentHeight + coordOffset) * scaleFactor + coordOffset));
+	setMinimumSize(
+		QSize((contentWidth + coordOffset) * scaleFactor + coordOffset,
+			  (contentHeight + coordOffset) * scaleFactor + coordOffset));
 
 	repaint();
 }
@@ -312,7 +349,7 @@ void Area::resetHighlight() {
 	repaint();
 }
 
-void Area::onPolygonHighlightReceived(Polygon* polygon) {
+void Area::onPolygonHighlightReceived(Polygon *polygon) {
 	resetHighlight();
 	highlightedPolygon = polygon;
 	repaint();
@@ -330,6 +367,4 @@ void Area::onLineHighlightReceived(QLineF line) {
 	repaint();
 }
 
-void Area::onAreaRepaintReceived() {
-	repaint();
-}
+void Area::onAreaRepaintReceived() { repaint(); }

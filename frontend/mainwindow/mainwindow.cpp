@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(generatorConfigWidget, SIGNAL(create_material_files()),
 					 this, SLOT(create_material_files()));
 
-	// --- SetUp ScrollArea ---					 
+	// --- SetUp ScrollArea ---
 	scrollArea = new QScrollArea(this);
 	scrollArea->setWidgetResizable(false);
 	setCentralWidget(scrollArea);
