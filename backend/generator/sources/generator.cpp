@@ -78,9 +78,25 @@ void generator::saveAs(const std::string &out_file) {
 		"= PiceWiceInterpolator1D\nfile = "
 		"ricker_30.txt\n[/interpolator]\n[/impulse]\n[/corrector]"};
 
+	do {
+		std::string correctorsOut = "";
+		for (const auto &c : default_correctors) {
+			correctorsOut += c;
+		}
+		replacer("<__CORRECTORS__>", correctorsOut);
+	} while (0);
+
 	std::vector<std::string> default_params = {"v"};
 	std::vector<std::size_t> default_norms = {1};
 	[[maybe_unused]] std::size_t default_nsteps_for_save = 100;
+
+	// saver
+	do {
+		replacer("<__STEPS_FOR_SAVE__>",
+				 std::to_string(default_nsteps_for_save));
+		replacer("<__PARAMS__>", default_params[0]);
+		replacer("<__NORMS__>", std::to_string(default_norms[0]));
+	} while (0);
 
 	std::cout << templ << std::endl;
 

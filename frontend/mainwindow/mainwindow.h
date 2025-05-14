@@ -7,6 +7,7 @@
 #include <generator.h>
 
 #include <QMainWindow>
+#include <QScrollArea>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -34,5 +35,6 @@ private:
 	void selectPolygon(QUuid id);
 
 	GeneratorConfigWidget *generatorConfigWidget = nullptr;
+	QScrollArea *scrollArea = nullptr;
 };
 #endif // MAINWINDOW_H

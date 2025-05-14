@@ -415,30 +415,30 @@ void Editor::setupExistingPolygon(Polygon *polygon) {
 }
 
 // Add Vertext by mouse click
-void Editor::addVertexByMouse(QPoint *point) {
+void Editor::addVertexByMouse(QPointF point) {
 	int row = vtable->rowCount() - 1;
 	QString name =
 		"V" + QString::number(polygonNumber) + "_" + QString::number(row);
 
 	// For check open dock or not
 	if (dock->isVisible()) {
-		addVRow(row, name, point->x(), point->y());
+		addVRow(row, name, point.x(), point.y());
 		onBufferConnect();
 	} else {
 		resetEditor();
 		dock->show();
-		addVRow(row, name, point->x(), point->y());
+		addVRow(row, name, point.x(), point.y());
 	}
 }
 
 // Change coord for vertex when move by mouse
-void Editor::editVertexCoord(int row, QPoint *new_coord) {
+void Editor::editVertexCoord(int row, QPointF new_coord) {
 	qobject_cast<QDoubleSpinBox *>(vtable->cellWidget(row, 1))
-		->setValue(new_coord->x());
+		->setValue(new_coord.x());
 	qobject_cast<QDoubleSpinBox *>(vtable->cellWidget(row, 2))
-		->setValue(new_coord->y());
+		->setValue(new_coord.y());
 
-	buffer[row] = QVector2D(new_coord->x(), new_coord->y());
+	buffer[row] = QVector2D(new_coord.x(), new_coord.y());
 	onBufferConnect();
 }
 
