@@ -17,6 +17,8 @@ public:
 inline Factory::~Factory() {}
 
 class RectGridFactory : public Factory {
+	DEFINE_CLASSNAME(RectGridFactory);
+
 public:
 	RectGridFactory() {}
 
@@ -27,6 +29,9 @@ public:
 private:
 	void Serialize_(std::stringstream &) const override;
 };
+
+using FactoryFactory = HelperFactory<Factory>;
+REGISTER_CLASS(Factory, RectGridFactory);
 
 } // namespace terraformer
 
